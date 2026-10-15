@@ -1,3 +1,5 @@
+pub mod port_map;
+
 use clap::Parser;
 use std::net::{IpAddr, SocketAddr};
 use std::time::Duration;
@@ -5,6 +7,7 @@ use tokio::net::TcpStream;
 use tokio::sync::mpsc::{channel, Sender};
 use tokio::sync::Semaphore;
 use tokio::time::timeout;
+use crate::port_map::get_port_description;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -37,7 +40,7 @@ async fn main() {
 
     while let Some(status) = rx.recv().await {
         if status.listening {
-            println!("{0} LISTENING", status.port)
+            println!("{0} LISTENING - {1}", status.port, get_port_description(status.port))
         }
     }
 }

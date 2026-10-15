@@ -10,3 +10,4 @@ reqwest = "0.13.5"
 tokio = { version = "1.53.3", features = ["full"] }
 table-extract = "0.2.3"
 html-cleaning = "0.3.0"
+regex = "1.13.1"
