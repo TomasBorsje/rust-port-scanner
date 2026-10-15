@@ -14,7 +14,10 @@ use crate::port_map::get_port_description;
 struct Args {
     /// IP address to scan
     #[arg(short, long)]
-    ip: IpAddr
+    ip: IpAddr,
+    /// Print port number descriptions, if available
+    #[arg(short, long)]
+    print_descriptions: bool,
 }
 
 struct PortStatus {
@@ -30,6 +33,7 @@ static PERMITS: Semaphore = Semaphore::const_new(MAX_PERMITS);
 async fn main() {
     let args = Args::parse();
     let ip: IpAddr = args.ip;
+    let print_descriptions = args.print_descriptions;
     let (tx, mut rx) = channel::<PortStatus>(MAX_PERMITS);
 
     tokio::spawn(async move {
@@ -40,7 +44,10 @@ async fn main() {
 
     while let Some(status) = rx.recv().await {
         if status.listening {
-            println!("{0} LISTENING - {1}", status.port, get_port_description(status.port))
+            match print_descriptions {
+                true => println!("{0} LISTENING - {1}", status.port, get_port_description(status.port)),
+                false => println!("{0} LISTENING", status.port),
+            }
         }
     }
 }

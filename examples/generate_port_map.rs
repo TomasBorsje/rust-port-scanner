@@ -63,6 +63,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
     }
 
     // Write port function file
+    // TODO: Some port ranges overlap, need to merge them if they share a port
     let mut file = File::create("src/port_map.rs").expect("Couldn't create port_map.rs");
     let header = r#"pub fn get_port_description(port: u16) -> String {
     match port {"#;
