@@ -1,5 +1,6 @@
 ## rust-port-scanner
-
+A port scanner CLI utility, written in Rust.
+```bash
 Usage: rps.exe [OPTIONS] --ip <IP>
 
 Options:
@@ -7,9 +8,10 @@ Options:
 -p, --print-descriptions  Print port number descriptions, if available
 -h, --help                Print help
 -V, --version             Print version
-
+```
 ### Example output
 ```
+rps.exe -p -i 127.0.0.1
 135 LISTENING - DCE endpoint resolution
 445 LISTENING - Microsoft-DS (Directory Services) Active Directory, Windows shares
 5040 LISTENING - League of Legends, a multiplayer online battle arena video game
