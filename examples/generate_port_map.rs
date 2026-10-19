@@ -48,9 +48,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
                 let port_max: u16 = port_ranges[1].parse().expect("Couldn't parse port range end");
 
                 for port in port_min..port_max+1 {
-                    if !port_map.contains_key(&port) {
-                        port_map.insert(port, vec![]);
-                    }
+                    port_map.entry(port).or_default();
                     port_map.get_mut(&port).unwrap().push(PortDescription {
                         description: description.clone()
                     });
@@ -59,9 +57,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
                 // Else it's a single port
                 match port_text.parse::<u16>() {
                     Ok(port) => {
-                        if !port_map.contains_key(&port) {
-                            port_map.insert(port, vec![]);
-                        }
+                        port_map.entry(port).or_default();
                         port_map.get_mut(&port).unwrap().push(PortDescription {
                             description: description.clone()
                         });
@@ -84,11 +80,10 @@ async fn main() -> Result<(), Box<dyn Error>>{
         let descriptions = vec
             .iter()
             .map(|e| e.description.clone())
-            .reduce(|acc, e| {
-                let mut new_string = String::from(acc);
-                new_string.push_str(" OR ");
-                new_string.push_str(&e);
-                new_string
+            .reduce(|mut acc, e| {
+                acc.push_str(" OR ");
+                acc.push_str(&e);
+                acc
             });
         writeln!(file, "        {0} => String::from(r#\"{1}\"#),", port, descriptions.unwrap_or(String::new())).expect("Couldn't write port line");
     }
