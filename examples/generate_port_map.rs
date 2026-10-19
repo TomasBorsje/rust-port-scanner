@@ -38,14 +38,14 @@ async fn main() -> Result<(), Box<dyn Error>>{
     for table in [well_known_ports, registered_ports] {
         for row in table.iter() {
             let cells = row.as_slice();
-            let description = clean_html(cells[cells.len()-1].to_owned(), &cleaner);
-            let port_text = clean_html(cells[0].to_owned(), &cleaner);
+            let description = clean_html(cells.last().expect("empty row").to_owned(), &cleaner);
+            let port_text = clean_html(cells.first().expect("empty row").to_owned(), &cleaner);
 
             // If it is a port range
             if port_text.contains("–") {
                 let port_ranges: Vec<&str> = port_text.split("–").collect();
-                let port_min: u16 = port_ranges[0].parse().expect("Couldn't parse port range start");
-                let port_max: u16 = port_ranges[1].parse().expect("Couldn't parse port range end");
+                let port_min: u16 = port_ranges.first().expect("Empty port range").parse().expect("Couldn't parse port range start");
+                let port_max: u16 = port_ranges.last().expect("Empty port range").parse().expect("Couldn't parse port range end");
 
                 for port in port_min..port_max+1 {
                     port_map.entry(port).or_default();
